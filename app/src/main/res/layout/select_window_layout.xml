@@ -75,7 +75,7 @@
                 android:background="@drawable/radius_rectangle_for_text"
                 android:gravity="center"
                 android:padding="3dp"
-                android:text="发布吐槽"
+                android:text="发布倾诉"
                 android:textColor="@color/mainBackground"
                 android:textSize="20sp" />
         </LinearLayout>

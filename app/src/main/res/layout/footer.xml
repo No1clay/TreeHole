@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="25dp"
             android:gravity="center_horizontal"
-            android:text="树洞吐槽"
+            android:text="树洞倾诉"
             android:textColor="@color/lightGray" />
     </LinearLayout>
 </RelativeLayout>

@@ -57,7 +57,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
                 android:layout_toRightOf="@id/id_img1"
-                android:text="我的吐槽"
+                android:text="我的倾诉"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_size" />
         </RelativeLayout>
@@ -85,7 +85,29 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_size" />
         </RelativeLayout>
+<!--添加一个未实现的树洞漂流瓶-->
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/itemHeight">
 
+            <ImageView
+                android:id="@+id/id_img6"
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/margin_left"
+                android:src="@drawable/pingzi" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@id/id_img6"
+                android:text="树洞漂流瓶（开发中）"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size" />
+        </RelativeLayout>
         <RelativeLayout
             android:id="@+id/change_passWord"
             android:layout_width="fill_parent"
@@ -157,6 +179,8 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_size" />
         </RelativeLayout>
+
+
     </LinearLayout>
 
     <!--实现底部的小UI-->
