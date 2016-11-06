@@ -37,4 +37,7 @@ dependencies {
     compile 'cn.bmob.android:bmob-sdk:3.5.0'
     //如果你想应用能够兼容Android6.0，请添加此依赖(org.apache.http.legacy.jar)
     compile 'cn.bmob.android:http-legacy:1.0'
+    compile files('libs/mobAPI-1.0.6.jar')
+    compile files('libs/MobCommons-2016.0727.1113.jar')
+    compile files('libs/MobTools-2016.0727.1113.jar')
 }

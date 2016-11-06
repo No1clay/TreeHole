@@ -85,7 +85,7 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_size" />
         </RelativeLayout>
-<!--添加一个未实现的树洞漂流瓶-->
+        <!--添加一个未实现的树洞漂流瓶-->
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="@dimen/itemHeight">
@@ -108,6 +108,7 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_size" />
         </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/change_passWord"
             android:layout_width="fill_parent"
@@ -184,40 +185,36 @@
     </LinearLayout>
 
     <!--实现底部的小UI-->
+
+
     <LinearLayout
-        android:layout_marginBottom="15dp"
-        android:orientation="vertical"
+        android:layout_marginBottom="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="5dp">
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="10"
-                android:textColor="#11B6F4"
-                android:textSize="40sp"
-                android:textStyle="normal" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginTop="-30dp"
-                android:text="。"
-                android:textColor="#11B6F4"
-                android:textSize="40sp" />
-        </LinearLayout>
         <TextView
-            android:textColor="@color/darkGray"
-            android:textSize="15sp"
+            android:id="@+id/temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="10"
+            android:textColor="#11B6F4"
+            android:textSize="40sp"
+            android:textStyle="normal" />
+
+        <TextView
+            android:layout_gravity="right"
+            android:id="@+id/weather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
             android:text="西安 小雨"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:textColor="@color/darkGray"
+            android:textSize="15sp" />
     </LinearLayout>
+
 </RelativeLayout>

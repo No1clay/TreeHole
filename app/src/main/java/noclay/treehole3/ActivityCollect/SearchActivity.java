@@ -23,6 +23,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.CountListener;
@@ -30,6 +31,7 @@ import cn.bmob.v3.listener.FindListener;
 import noclay.treehole3.ListViewPackage.ListViewAdapterForLove;
 import noclay.treehole3.ListViewPackage.PullListView;
 import noclay.treehole3.ListViewPackage.TreeHoleItemForLove;
+import noclay.treehole3.MainActivity;
 import noclay.treehole3.R;
 
 /**
@@ -72,6 +74,8 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity_layout);
         initView();
+        Bmob.initialize(SearchActivity.this, "e7a1bf15265fddb02517d7d9181fe6a6");
+
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -173,79 +177,93 @@ public class SearchActivity extends AppCompatActivity {
 
     private void getMore(int type) {
         String key = searchKeyEditText.getText().toString();
+        Log.d(TAG, "getMore: key" + key);
         BmobQuery<TreeHoleItemForLove> query1 = new BmobQuery<TreeHoleItemForLove>();
         BmobQuery<TreeHoleItemForLove> query2 = new BmobQuery<TreeHoleItemForLove>();
         BmobQuery<TreeHoleItemForLove> query3 = new BmobQuery<TreeHoleItemForLove>();
         query1.addWhereContains("fromUserName", key);
         query2.addWhereContains("toUserName", key);
-        query3.addWhereContains("content", key);
+//        query3.addWhereContains("content", key);
+        query3.addWhereMatches("content", "*" + key + "*");
         List<BmobQuery<TreeHoleItemForLove>> andQuerys = new ArrayList<BmobQuery<TreeHoleItemForLove>>();
         if (fromChoosed.isChecked()) {
+            Log.d(TAG, "getMore: oneadd");
             andQuerys.add(query1);
         }
         if (toChoosed.isChecked()) {
+            Log.d(TAG, "getMore: twoadd");
             andQuerys.add(query2);
         }
         if (contentChoosed.isChecked()) {
+            Log.d(TAG, "getMore: threeadd");
             andQuerys.add(query3);
         }
         query = new BmobQuery<TreeHoleItemForLove>();
         query.or(andQuerys);//或逻辑
         query.order("-createdAt");//从新到旧排序
         if (type == DOWN_LOAD) {
-            query.count(TreeHoleItemForLove.class, new CountListener() {
+            query3.findObjects(new FindListener<TreeHoleItemForLove>() {
                 @Override
-                public void done(Integer integer, BmobException e) {
-                    if (e != null) {
-                        Toast.makeText(context, "数据库异常", Toast.LENGTH_SHORT).show();
-                    } else {
-                        //设置页面可视化
-                        cur = RESULT;
-                        mainResultShow.setVisibility(View.VISIBLE);
-                        mainSearchShow.setVisibility(View.GONE);
-
-                        treeList.clear();
-                        listViewAdapterForLove.clear();
-                        searchResultShowInNumber.setText("共有" + integer + "条表白信息");
-                        if (integer == 0) {//0条信息显示无法加载更多
-                            loadLayout.setVisibility(View.GONE);
-                            searchResultShow.setNoMore();
-                        } else {
-//                            Log.d(TAG, "done() called with: " + "integer = [" + integer + "], e = [" + isFirst + "]");
-                            //加载的动画
-                            searchResultShow.setHasMore();
-                            if (isFirst) {
-                                loadLayout.setVisibility(View.VISIBLE);
-                                ImageView iv_loading = (ImageView) findViewById(R.id.iv_loading);
-                                loadingDrawable = (AnimationDrawable) iv_loading.getDrawable();
-                                loadingDrawable.start();
-                            } else {
-                                loadLayout.setVisibility(View.GONE);
-                            }
-                            skip = 0;
-                            query.setLimit(15);
-                            query.setSkip(skip * 15);
-                            query.findObjects(new FindListener<TreeHoleItemForLove>() {
-                                @Override
-                                public void done(List<TreeHoleItemForLove> list, BmobException e) {
-//                                    Log.d(TAG, "在进行搜索");
-                                    skip = 1;
-                                    if (e == null) {
-                                        treeList.addAll(list);
-                                        delayTime(2000, DOWN_LOAD);
-                                    } else {
-                                        Toast.makeText(context, "数据库异常", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-                            if (integer <= 15){
-                                searchResultShow.setNoMore();
-                            }
-                        }
+                public void done(List<TreeHoleItemForLove> list, BmobException e) {
+                    if(e == null){
+                        Log.d(TAG, "done: list.size" + list.size());
                     }
-
                 }
             });
+//            query.count(TreeHoleItemForLove.class, new CountListener() {
+//                @Override
+//                public void done(Integer integer, BmobException e) {
+//                    if (e != null) {
+//                        Log.e(TAG, "done: ", e );
+//                        Toast.makeText(context, "数据库异常", Toast.LENGTH_SHORT).show();
+//                    } else {
+//                        //设置页面可视化
+//                        cur = RESULT;
+//                        mainResultShow.setVisibility(View.VISIBLE);
+//                        mainSearchShow.setVisibility(View.GONE);
+//                        treeList.clear();
+//                        listViewAdapterForLove.clear();
+//                        Log.d(TAG, "done: integer" + integer);
+//                        searchResultShowInNumber.setText("共有" + integer + "条表白信息");
+//                        if (integer != 0) {//0条信息显示无法加载更多
+//                            loadLayout.setVisibility(View.GONE);
+//                            searchResultShow.setNoMore();
+//                        } else {
+////                            Log.d(TAG, "done() called with: " + "integer = [" + integer + "], e = [" + isFirst + "]");
+//                            //加载的动画
+//                            searchResultShow.setHasMore();
+//                            if (isFirst) {
+//                                loadLayout.setVisibility(View.VISIBLE);
+//                                ImageView iv_loading = (ImageView) findViewById(R.id.iv_loading);
+//                                loadingDrawable = (AnimationDrawable) iv_loading.getDrawable();
+//                                loadingDrawable.start();
+//                            } else {
+//                                loadLayout.setVisibility(View.GONE);
+//                            }
+//                            skip = 0;
+//                            query.setLimit(15);
+//                            query.setSkip(skip * 15);
+//                            query.findObjects(new FindListener<TreeHoleItemForLove>() {
+//                                @Override
+//                                public void done(List<TreeHoleItemForLove> list, BmobException e) {
+////                                    Log.d(TAG, "在进行搜索");
+//                                    skip = 1;
+//                                    if (e == null) {
+//                                        treeList.addAll(list);
+//                                        delayTime(2000, DOWN_LOAD);
+//                                    } else {
+//                                        Toast.makeText(context, "数据库异常", Toast.LENGTH_SHORT).show();
+//                                    }
+//                                }
+//                            });
+//                            if (integer <= 15){
+//                                searchResultShow.setNoMore();
+//                            }
+//                        }
+//                    }
+//
+//                }
+//            });
         }else{
             query.setLimit(15);
             query.setSkip(skip);

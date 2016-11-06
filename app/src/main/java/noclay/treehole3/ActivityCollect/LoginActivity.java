@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -40,9 +41,10 @@ public class LoginActivity extends Activity {
     private EditText user_password;
     private TextView signUser;
     private TextView forgetPassWord;
-    private TextView back;
     private Button login;
     private CheckBox rememberLoginStateButton;
+    long mExitTime;
+
     private static final int SIGN= 0;
     private static final int CHANGE_PASSWORD = 1;
     private static final String TAG = "LoginActivity";
@@ -52,6 +54,7 @@ public class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+        setResult(RESULT_OK);
         ActivityCollector.addActivity(this);
         if(!isOpenNetWork()){//网络不可用
             Toast.makeText(LoginActivity.this,"你的网络状态不佳", Toast.LENGTH_SHORT).show();
@@ -168,6 +171,26 @@ public class LoginActivity extends Activity {
         forgetPassWord = (TextView) findViewById(R.id.forgetPassWord);
         login = (Button) findViewById(R.id.login);
         rememberLoginStateButton = (CheckBox) findViewById(R.id.rememberLoginState);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            if ((System.currentTimeMillis() - mExitTime) > 2000) {
+                Toast.makeText(LoginActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                mExitTime = System.currentTimeMillis();
+            } else {
+                setResult(RESULT_CANCELED);
+                finish();
+            }
+        }
+        return true;
     }
 
     @Override

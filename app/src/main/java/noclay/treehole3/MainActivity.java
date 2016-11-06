@@ -21,7 +21,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -29,8 +28,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mob.mobapi.API;
+import com.mob.mobapi.APICallback;
+import com.mob.mobapi.MobAPI;
+import com.mob.mobapi.apis.Weather;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
@@ -56,7 +63,7 @@ import noclay.treehole3.SelectPopupWindow.SelectPopupWindow;
 
 import static noclay.treehole3.R.id.cover_layout;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private MyCircleImageView nowUserImage;
     private TextView nowUserName;
@@ -77,9 +84,9 @@ public class MainActivity extends AppCompatActivity {
     private Uri userImageUri;
     private LocalBroadcastManager localBroadcastManager;
     private LocalReceiver localReceiver;
+    private TextView temperature;
+    private TextView weatherView;
     private boolean isAddMenuOpen = false;
-
-
     private Context context = MainActivity.this;
     private String userImagePath;
     private static final int REQUEST_CODE_PICK_IMAGE = 0;
@@ -90,88 +97,27 @@ public class MainActivity extends AppCompatActivity {
     private static final int MESSAGE_FROM_UP_USER_IAMGE = 2;
     private static final String TAG = "MainActivity";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Bmob.initialize(MainActivity.this, "e7a1bf15265fddb02517d7d9181fe6a6");
+        //初始化天气的Api
+        MobAPI.initSDK(MainActivity.this, "18a8f9ead5620");
         //如果有登录的状态，则不进行登录
+        //检查是否登录
         initView();
-
-        View.OnClickListener listener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (view.getId()) {
-                    case R.id.toggle_menu:
-                        slidingMenu.toggle();
-                        break;
-                    case R.id.toggle_theme:
-//                        setToggleTheme(true);
-                        break;
-                    case R.id.love_button_layout:
-                        setFooterTheme(1);
-                        break;
-                    case R.id.add_button: {
-                        ObjectAnimator objectAnimator = new ObjectAnimator()
-                                .ofFloat(toggleAddMenuButton, View.ROTATION, 0, 45);
-                        objectAnimator.setDuration(500);
-                        objectAnimator.start();
-                        toggleButtonMenu();
-                        mMenuView.setOnDismissListener(new PopupWindow.OnDismissListener() {
-                            @Override
-                            public void onDismiss() {
-                                ObjectAnimator objectAnimator = new ObjectAnimator()
-                                        .ofFloat(toggleAddMenuButton, View.ROTATION, 45, 0);
-                                objectAnimator.setDuration(500);
-                                objectAnimator.start();
-                            }
-                        });
-                        break;
-                    }
-                    case R.id.speak_button:
-                        setFooterTheme(3);
-                        break;
-                    case R.id.my_tree_hole: {
-                        Intent intent = new Intent(context, ManagerSpeakActivity.class);
-                        startActivity(intent);
-                        break;
-                    }
-                    case R.id.my_love_wall: {
-                        Intent intent = new Intent(context, ManagerLoveActivity.class);
-                        startActivity(intent);
-                        break;
-                    }
-                    case R.id.change_passWord: {
-//                        Log.d(TAG, "onClick() called with: " + "view = [修改密码]");
-                        Intent intent = new Intent(MainActivity.this, ChangePassWord.class);
-                        intent.putExtra("isLogin", false);
-                        startActivity(intent);
-                        break;
-                    }
-                    case R.id.toggle_account: {
-//                        Log.d(TAG, "onClick() called with: " + "view = [切换用户]");
-                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                        break;
-                    }
-                    case R.id.userImage: {//添加头像
-                        chooseUserImage();
-                        break;
-                    }
-                }
-            }
-        };
-        nowUserImage.setOnClickListener(listener);
-        changePassWord.setOnClickListener(listener);
-        toggleAccount.setOnClickListener(listener);
-        myTreeHoleForLove.setOnClickListener(listener);
-        toggleAddMenuButton.setOnClickListener(listener);
-        myTreeHoleForSpeak.setOnClickListener(listener);
-        toggleTheme.setOnClickListener(listener);
-        loveButton.setOnClickListener(listener);
-        speakButton.setOnClickListener(listener);
-        toggleMenu.setOnClickListener(listener);
+        checkIsLogined();
+        nowUserImage.setOnClickListener(this);
+        changePassWord.setOnClickListener(this);
+        toggleAccount.setOnClickListener(this);
+        myTreeHoleForLove.setOnClickListener(this);
+        toggleAddMenuButton.setOnClickListener(this);
+        myTreeHoleForSpeak.setOnClickListener(this);
+        toggleTheme.setOnClickListener(this);
+        loveButton.setOnClickListener(this);
+        speakButton.setOnClickListener(this);
+        toggleMenu.setOnClickListener(this);
 
 
         /**
@@ -181,6 +127,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void isOpening(boolean flag) {
                 if(flag){
+                    //正在打开菜单，进行一次天气的请求
+                    getWeather("西安");
                     ObjectAnimator objectAnimator = ObjectAnimator.
                             ofFloat(coverLayout, View.ALPHA, 0, 255);
                     objectAnimator.setDuration(500);
@@ -191,6 +139,42 @@ public class MainActivity extends AppCompatActivity {
                     objectAnimator.setDuration(500);
                     objectAnimator.start();
                 }
+            }
+        });
+    }
+
+    private void getWeather(String city) {
+        final Weather weather = (Weather) MobAPI.getAPI(Weather.NAME);
+        weather.queryByCityName("西安", new APICallback() {
+            @Override
+            public void onSuccess(API api, int i, Map<String, Object> map) {
+                ArrayList<HashMap<String, Object>> results = (ArrayList<HashMap<String, Object>>) map.get("result");
+                HashMap<String, Object> local = results.get(0);
+                ArrayList<HashMap<String, Object>> future = (ArrayList<HashMap<String, Object>>) local.get("future");
+//                        showWeather.setText("温度" + firstDay.get("temperature") + "\n");
+                HashMap<String, Object> firstDay = future.get(0);
+                temperature.setText(firstDay.get("temperature").toString());
+                String dayTime = (String) firstDay.get("dayTime");
+                String night = (String) firstDay.get("night");
+                Log.d(TAG, "onSuccess: firstDay" + firstDay.toString());
+                Log.d(TAG, "onSuccess: dayTime" + dayTime);
+                Log.d(TAG, "onSuccess: night" + night);
+                String data;
+                if(dayTime != null && night != null){
+                    data = dayTime.equals(night) ? dayTime : dayTime + "~" + night;
+                }else if(dayTime != null && night == null){
+                    data = dayTime;
+                }else if(dayTime == null && night != null){
+                    data = night;
+                }else{
+                    data = "暂无数据";
+                }
+                weatherView.setText("西安 " + data);
+            }
+
+            @Override
+            public void onError(API api, int i, Throwable throwable) {
+                temperature.setText("网络错误");
             }
         });
     }
@@ -243,7 +227,6 @@ public class MainActivity extends AppCompatActivity {
     private void checkIsLogined() {
         SharedPreferences shared = getSharedPreferences("LoginState", MODE_PRIVATE);
         boolean isLogined = shared.getBoolean("loginRememberState", false);
-//        Log.d(TAG, "checkIsLogined() called with: " + isLogined);
         if (!isLogined) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivityForResult(intent, REQUEST_LOGIN);
@@ -392,7 +375,8 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         coverLayout = findViewById(cover_layout);
         coverLayout.setAlpha(0);
-
+        temperature = (TextView) findViewById(R.id.temperature);
+        weatherView = (TextView) findViewById(R.id.weather);
         slidingMenu = (SlidingMenu) findViewById(R.id.main_menu);
         toggleTheme = (RelativeLayout) findViewById(R.id.toggle_theme);
         loveButton = (LinearLayout) findViewById(R.id.love_button_layout);
@@ -422,6 +406,9 @@ public class MainActivity extends AppCompatActivity {
         intentFilter.addAction("LOGIN_SUCCESS");
         localReceiver = new LocalReceiver();
         localBroadcastManager.registerReceiver(localReceiver, intentFilter);
+
+        //初始化天气
+        getWeather("西安");
     }
 
     @Override
@@ -535,6 +522,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQUEST_LOGIN){
+            if(resultCode == RESULT_OK){
+
+            }else{
+                Log.d(TAG, "onActivityResult: exit");
+                finish();
+                System.exit(0);
+            }
+        }
         Uri imageUri;
         if (resultCode == RESULT_CANCELED) {
         } else if (resultCode == RESULT_OK) {//选取成功后进行裁剪
@@ -657,6 +653,68 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(MediaStore.EXTRA_OUTPUT, userImageUri);
 //        Log.d(TAG, "reSizeImage() called with: " + "uri = [" + userImageUri + "]");
         startActivityForResult(intent, REQUEST_RESIZE_REQUEST_CODE);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.toggle_menu:
+                slidingMenu.toggle();
+                break;
+            case R.id.toggle_theme:
+//                        setToggleTheme(true);
+                break;
+            case R.id.love_button_layout:
+                setFooterTheme(1);
+                break;
+            case R.id.add_button: {
+                ObjectAnimator objectAnimator = new ObjectAnimator()
+                        .ofFloat(toggleAddMenuButton, View.ROTATION, 0, 45);
+                objectAnimator.setDuration(500);
+                objectAnimator.start();
+                toggleButtonMenu();
+                mMenuView.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                    @Override
+                    public void onDismiss() {
+                        ObjectAnimator objectAnimator = new ObjectAnimator()
+                                .ofFloat(toggleAddMenuButton, View.ROTATION, 45, 0);
+                        objectAnimator.setDuration(500);
+                        objectAnimator.start();
+                    }
+                });
+                break;
+            }
+            case R.id.speak_button:
+                setFooterTheme(3);
+                break;
+            case R.id.my_tree_hole: {
+                Intent intent = new Intent(context, ManagerSpeakActivity.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.my_love_wall: {
+                Intent intent = new Intent(context, ManagerLoveActivity.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.change_passWord: {
+//                        Log.d(TAG, "onClick() called with: " + "view = [修改密码]");
+                Intent intent = new Intent(MainActivity.this, ChangePassWord.class);
+                intent.putExtra("isLogin", false);
+                startActivity(intent);
+                break;
+            }
+            case R.id.toggle_account: {
+//                        Log.d(TAG, "onClick() called with: " + "view = [切换用户]");
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.userImage: {//添加头像
+                chooseUserImage();
+                break;
+            }
+        }
     }
 
     class LocalReceiver extends BroadcastReceiver {
