@@ -174,7 +174,6 @@ public class SignFirstStep extends AppCompatActivity implements View.OnClickList
                 break;
             }
             case R.id.completeSign: {
-                SignUserBaseClass signOne = new SignUserBaseClass();
                 if (signUserName.getText().toString().length() > 20 || signUserName.getText().toString().length() <= 0) {
                     Toast.makeText(context, "昵称过长或过短", Toast.LENGTH_SHORT).show();
                 } else if (cur == 0) {

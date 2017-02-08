@@ -157,29 +157,29 @@
                 android:textSize="@dimen/text_size" />
         </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/toggle_theme"
-            android:layout_width="fill_parent"
-            android:layout_height="@dimen/itemHeight">
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/toggle_theme"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="@dimen/itemHeight">-->
 
-            <ImageView
-                android:id="@+id/id_img4"
-                android:layout_width="@dimen/icon_size"
-                android:layout_height="@dimen/icon_size"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/margin_left"
-                android:src="@drawable/theme_icon" />
+            <!--<ImageView-->
+                <!--android:id="@+id/id_img4"-->
+                <!--android:layout_width="@dimen/icon_size"-->
+                <!--android:layout_height="@dimen/icon_size"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginLeft="@dimen/margin_left"-->
+                <!--android:src="@drawable/theme_icon" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:layout_toRightOf="@id/id_img4"
-                android:text="切换主题"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_size" />
-        </RelativeLayout>
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginLeft="20dp"-->
+                <!--android:layout_toRightOf="@id/id_img4"-->
+                <!--android:text="切换主题"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:textSize="@dimen/text_size" />-->
+        <!--</RelativeLayout>-->
 
 
     </LinearLayout>

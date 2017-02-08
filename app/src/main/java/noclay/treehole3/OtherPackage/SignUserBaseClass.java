@@ -13,6 +13,8 @@ public class SignUserBaseClass extends BmobObject {
     private String passWord;//用于修改密码
     private String phoneNumber;//用于储存手机号
 
+    private BmobFile userImage;//用户头像
+
     public BmobFile getUserImage() {
         return userImage;
     }
@@ -20,8 +22,6 @@ public class SignUserBaseClass extends BmobObject {
     public void setUserImage(BmobFile userImage) {
         this.userImage = userImage;
     }
-
-    private BmobFile userImage;//用户头像
 
     public Boolean getMan() {
         return isMan;

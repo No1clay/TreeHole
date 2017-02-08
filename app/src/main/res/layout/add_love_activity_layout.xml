@@ -133,12 +133,12 @@
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="50dp">
-        <Button
-            android:clickable="true"
-            android:backgroundTint="@color/mainBackground"
-            android:background="@drawable/love_arrow"
-            android:layout_width="50dp"
-            android:layout_height="match_parent" />
+        <!--<Button-->
+            <!--android:clickable="true"-->
+            <!--android:backgroundTint="@color/mainBackground"-->
+            <!--android:background="@drawable/love_arrow"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="match_parent" />-->
         <TextView
             android:textColor="@color/mainBackground"
             android:textSize="20sp"

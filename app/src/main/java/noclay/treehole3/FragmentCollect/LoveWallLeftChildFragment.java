@@ -71,13 +71,14 @@ public class LoveWallLeftChildFragment extends Fragment{
         listViewAdapterForLove = new ListViewAdapterForLove(getActivity(), R.layout.tree_hole_item_for_love, list,false);
         loadLayout = (LinearLayout) loveWallLeftChildFragment.findViewById(R.id.load_layout);
         searchButton = (RelativeLayout) loveWallLeftChildFragment.findViewById(R.id.search_go_btn);
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), SearchActivity.class);
-                getActivity().startActivity(intent);
-            }
-        });
+        searchButton.setVisibility(View.GONE);
+//        searchButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getActivity(), SearchActivity.class);
+//                getActivity().startActivity(intent);
+//            }
+//        });
         returnHomeButton = (ImageButton) loveWallLeftChildFragment.findViewById(R.id.return_home_button);
         //加载上一次打开的数据
         listViewLoveWall.setAdapter(listViewAdapterForLove);

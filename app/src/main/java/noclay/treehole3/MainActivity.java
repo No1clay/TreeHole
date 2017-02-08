@@ -92,9 +92,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int REQUEST_CODE_PICK_IMAGE = 0;
     private static final int REQUEST_CODE_CAPTURE_CAMEIA = 1;
     private static final int REQUEST_RESIZE_REQUEST_CODE = 2;
-    private static final int REQUEST_LOGIN = 3;
     private static final int MESSAGE_FROM_USER_IMAGE = 0;
     private static final int MESSAGE_FROM_UP_USER_IAMGE = 2;
+    private static final int REQUEST_LOGIN = 3;
+    private static final int REQUEST_THEME = 4;
     private static final String TAG = "MainActivity";
 
     @Override
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         myTreeHoleForLove.setOnClickListener(this);
         toggleAddMenuButton.setOnClickListener(this);
         myTreeHoleForSpeak.setOnClickListener(this);
-        toggleTheme.setOnClickListener(this);
+//        toggleTheme.setOnClickListener(this);
         loveButton.setOnClickListener(this);
         speakButton.setOnClickListener(this);
         toggleMenu.setOnClickListener(this);
@@ -378,7 +379,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         temperature = (TextView) findViewById(R.id.temperature);
         weatherView = (TextView) findViewById(R.id.weather);
         slidingMenu = (SlidingMenu) findViewById(R.id.main_menu);
-        toggleTheme = (RelativeLayout) findViewById(R.id.toggle_theme);
+//        toggleTheme = (RelativeLayout) findViewById(R.id.toggle_theme);
         loveButton = (LinearLayout) findViewById(R.id.love_button_layout);
         loveButtonIcon = (ImageView) findViewById(R.id.love_button_icon);
         loveButtonTitle = (TextView) findViewById(R.id.love_button_title);
@@ -661,9 +662,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.toggle_menu:
                 slidingMenu.toggle();
                 break;
-            case R.id.toggle_theme:
-//                        setToggleTheme(true);
-                break;
+//            case R.id.toggle_theme:
+////                Toast.makeText(context, "切换主题", Toast.LENGTH_SHORT).show();
+////                Intent intent = new Intent(this, ThemeActivity.class);
+////                startActivityForResult(intent, REQUEST_THEME);
+//////                        setToggleTheme(true);
+//                break;
             case R.id.love_button_layout:
                 setFooterTheme(1);
                 break;
@@ -688,26 +692,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 setFooterTheme(3);
                 break;
             case R.id.my_tree_hole: {
-                Intent intent = new Intent(context, ManagerSpeakActivity.class);
-                startActivity(intent);
+                Intent intent1 = new Intent(context, ManagerSpeakActivity.class);
+                startActivity(intent1);
                 break;
             }
             case R.id.my_love_wall: {
-                Intent intent = new Intent(context, ManagerLoveActivity.class);
-                startActivity(intent);
+                Intent intent2 = new Intent(context, ManagerLoveActivity.class);
+                startActivity(intent2);
                 break;
             }
             case R.id.change_passWord: {
 //                        Log.d(TAG, "onClick() called with: " + "view = [修改密码]");
-                Intent intent = new Intent(MainActivity.this, ChangePassWord.class);
-                intent.putExtra("isLogin", false);
-                startActivity(intent);
+                Intent intent3 = new Intent(MainActivity.this, ChangePassWord.class);
+                intent3.putExtra("isLogin", false);
+                startActivity(intent3);
                 break;
             }
             case R.id.toggle_account: {
 //                        Log.d(TAG, "onClick() called with: " + "view = [切换用户]");
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
+                Intent intent4 = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent4);
                 break;
             }
             case R.id.userImage: {//添加头像
