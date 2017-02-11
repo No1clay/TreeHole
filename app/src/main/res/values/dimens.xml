@@ -7,4 +7,5 @@
     <dimen name="margin_left">45dp</dimen>
     <dimen name="itemHeight">50dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="scoreItemWidth">80dp</dimen>
 </resources>

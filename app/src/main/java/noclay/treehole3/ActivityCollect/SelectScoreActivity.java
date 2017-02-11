@@ -2,6 +2,7 @@ package noclay.treehole3.ActivityCollect;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -114,9 +115,13 @@ public class SelectScoreActivity extends AppCompatActivity
     public void onItemClick(View view, int position) {
         switch (position) {
             case 0: {
+                Intent intent = new Intent(context, ScoreInfoActivity.class);
+                startActivity(intent);
                 break;
             }
             case 1: {
+                Intent intent = new Intent(context, ScoreInfoActivity.class);
+                startActivity(intent);
                 break;
             }
             case 2: {

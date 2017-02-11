@@ -118,6 +118,8 @@
             android:label="@string/title_activity_select_score"
             android:theme="@style/AppTheme">
         </activity>
+        <activity android:name=".ActivityCollect.ScoreInfoActivity">
+        </activity>
     </application>
 
 </manifest>
