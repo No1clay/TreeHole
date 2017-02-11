@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <!--倾诉/吐槽-->
+        <item android:id="@+id/my_tree_hole"
+              android:icon="@drawable/tree_hole_icon"
+              android:title="我的倾诉">
+        </item>
+        <!--表白墙-->
+        <item android:id="@+id/my_love_wall"
+              android:icon="@drawable/love2"
+              android:title="我的表白">
+        </item>
+        <!--我的成绩-->
+        <item android:id="@+id/my_score"
+              android:icon="@drawable/score_icon"
+              android:title="我的成绩">
+        </item>
+        <!--修改密码-->
+        <item android:id="@+id/change_passWord"
+              android:icon="@drawable/password_icon"
+              android:title="修改密码">
+        </item>
+        <!--切换用户-->
+        <item android:id="@+id/toggle_account"
+              android:icon="@drawable/user"
+              android:title="切换用户">
+        </item>
+    </group>
+</menu>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_select_score"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="noclay.treehole3.ActivityCollect.SelectScoreActivity"
+    tools:showIn="@layout/activity_select_score">
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/loginLayout"
+        android:background="@drawable/score_background"
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/user_image"
+            android:layout_margin="15dp"
+            android:src="@drawable/man"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="75dp"
+            android:layout_height="75dp"/>
+        <TextView
+            android:textSize="17sp"
+            android:id="@+id/user_name"
+            android:layout_gravity="center_horizontal"
+            android:text="点击登陆"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/menuList"
+        android:layout_below="@id/loginLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>
