@@ -120,6 +120,8 @@
         </activity>
         <activity android:name=".ActivityCollect.ScoreInfoActivity">
         </activity>
+        <activity android:name=".ActivityCollect.SelectCETActivity">
+        </activity>
     </application>
 
 </manifest>
