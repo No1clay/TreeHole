@@ -7,9 +7,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
@@ -23,6 +26,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
@@ -31,7 +36,6 @@ import cn.bmob.v3.listener.FindListener;
 import noclay.treehole3.ListViewPackage.ListViewAdapterForLove;
 import noclay.treehole3.ListViewPackage.PullListView;
 import noclay.treehole3.ListViewPackage.TreeHoleItemForLove;
-import noclay.treehole3.MainActivity;
 import noclay.treehole3.R;
 
 /**
@@ -39,8 +43,9 @@ import noclay.treehole3.R;
  */
 public class SearchActivity extends AppCompatActivity {
     private static final String TAG = "SearchActivity";
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
     private PullListView searchResultShow;
-    private ImageView cancelButton;
     private AutoCompleteTextView searchKeyEditText;
     private List<TreeHoleItemForLove> treeList = new ArrayList<>();
     private TextView searchStartButton;
@@ -73,15 +78,11 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity_layout);
+        ButterKnife.bind(this);
         initView();
         Bmob.initialize(SearchActivity.this, "e7a1bf15265fddb02517d7d9181fe6a6");
 
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setBackMode(cur, true);
-            }
-        });
+
         returnHomeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -213,7 +214,7 @@ public class SearchActivity extends AppCompatActivity {
                 @Override
                 public void done(Integer integer, BmobException e) {
                     if (e != null) {
-                        Log.e(TAG, "done: ", e );
+                        Log.e(TAG, "done: ", e);
                         Toast.makeText(context, "数据库异常", Toast.LENGTH_SHORT).show();
                     } else {
                         //设置页面可视化
@@ -255,7 +256,7 @@ public class SearchActivity extends AppCompatActivity {
                                     }
                                 }
                             });
-                            if (integer <= 15){
+                            if (integer <= 15) {
                                 searchResultShow.setNoMore();
                             }
                         }
@@ -263,7 +264,7 @@ public class SearchActivity extends AppCompatActivity {
 
                 }
             });
-        }else{
+        } else {
             query.setLimit(15);
             query.setSkip(skip);
             query.findObjects(new FindListener<TreeHoleItemForLove>() {
@@ -279,7 +280,6 @@ public class SearchActivity extends AppCompatActivity {
     private void initView() {
         loadLayout = (LinearLayout) findViewById(R.id.load_layout);
         searchResultShow = (PullListView) findViewById(R.id.search_result_show);
-        cancelButton = (ImageView) findViewById(R.id.cancel_button);
         searchKeyEditText = (AutoCompleteTextView) findViewById(R.id.search_key_edit_text);
         searchStartButton = (TextView) findViewById(R.id.search_start_button);
         fromChoosed = (CheckBox) findViewById(R.id.checkbox2);
@@ -295,7 +295,23 @@ public class SearchActivity extends AppCompatActivity {
         listViewAdapterForLove = new
                 ListViewAdapterForLove(context, R.layout.tree_hole_item_for_love, treeList, false);
         searchResultShow.setAdapter(listViewAdapterForLove);
+        setSupportActionBar(mToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle("修改密码");
+        }
 
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:{
+                setBackMode(cur, true);
+                break;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     Handler handler = new Handler() {

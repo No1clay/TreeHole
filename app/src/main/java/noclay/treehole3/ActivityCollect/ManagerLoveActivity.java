@@ -3,18 +3,17 @@ package noclay.treehole3.ActivityCollect;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.LayoutInflater;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -28,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobDate;
 import cn.bmob.v3.datatype.BmobPointer;
@@ -40,10 +41,14 @@ import noclay.treehole3.ListViewPackage.TreeHoleItemForLove;
 import noclay.treehole3.OtherPackage.SignUserBaseClass;
 import noclay.treehole3.R;
 
+import static noclay.treehole3.R.id.back;
+
 /**
  * Created by 82661 on 2016/8/25.
  */
 public class ManagerLoveActivity extends AppCompatActivity {
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
     private PullListView listViewLoveWall;
     List<TreeHoleItemForLove> list = new ArrayList<>();
     ListViewAdapterForLove listViewAdapterForLove;
@@ -51,7 +56,6 @@ public class ManagerLoveActivity extends AppCompatActivity {
     private LinearLayout loadLayout;
     private AnimationDrawable loadingDrawable;
     private ImageButton returnHomeButton;
-    private ImageView back;
     private static final int LOAD_OVER = 0;
     private static final int UP_LOAD = 1;
     private static final int DOWN_LOAD = 2;
@@ -67,6 +71,7 @@ public class ManagerLoveActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manager_love);
+        ButterKnife.bind(this);
         initView();
 
         listViewLoveWall.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -78,8 +83,8 @@ public class ManagerLoveActivity extends AppCompatActivity {
                 Dialog.OnClickListener listener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        switch (i){
-                            case DialogInterface.BUTTON_POSITIVE:{
+                        switch (i) {
+                            case DialogInterface.BUTTON_POSITIVE: {
                                 Toast.makeText(context, "正在删除", Toast.LENGTH_SHORT).show();
                                 TreeHoleItemForLove tree = new TreeHoleItemForLove();
                                 tree.setObjectId(treeHoleItemForLove.getObjectId());
@@ -88,13 +93,13 @@ public class ManagerLoveActivity extends AppCompatActivity {
                                     public void done(BmobException e) {
 
                                         msg1.what = DELETE_ITEM_FOR_LOVE;
-                                        msg1.arg1 = ( e == null ? 1 : 0);
+                                        msg1.arg1 = (e == null ? 1 : 0);
                                         handler.sendMessage(msg1);
                                     }
                                 });
                                 break;
                             }
-                            case DialogInterface.BUTTON_NEGATIVE:{
+                            case DialogInterface.BUTTON_NEGATIVE: {
                                 break;
                             }
                         }
@@ -103,8 +108,8 @@ public class ManagerLoveActivity extends AppCompatActivity {
                 Dialog dialog = new AlertDialog.Builder(context)
                         .setTitle("是否删除？")
                         .setMessage(treeHoleItemForLove.getContent())
-                        .setPositiveButton("确定",listener)
-                        .setNegativeButton("取消",listener)
+                        .setPositiveButton("确定", listener)
+                        .setNegativeButton("取消", listener)
                         .create();
                 dialog.show();
                 return false;
@@ -114,17 +119,11 @@ public class ManagerLoveActivity extends AppCompatActivity {
 
     private void initView() {
         listViewLoveWall = (PullListView) findViewById(R.id.fragment_list_view_for_left_love);
-        listViewAdapterForLove = new ListViewAdapterForLove(context , R.layout.tree_hole_item_for_love, list,false);
-        loadLayout = (LinearLayout)findViewById(R.id.load_layout);
+        listViewAdapterForLove = new ListViewAdapterForLove(context, R.layout.tree_hole_item_for_love, list, false);
+        loadLayout = (LinearLayout) findViewById(R.id.load_layout);
         searchButton = (RelativeLayout) findViewById(R.id.search_go_btn);
         searchButton.setVisibility(View.GONE);//设置不可见
-        back = (ImageView) findViewById(R.id.cancel_button);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+
 //        searchButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -135,7 +134,7 @@ public class ManagerLoveActivity extends AppCompatActivity {
         returnHomeButton = (ImageButton) findViewById(R.id.return_home_button);
         //加载上一次打开的数据
         listViewLoveWall.setAdapter(listViewAdapterForLove);
-        getMore(LOAD_LAYOUT,"");
+        getMore(LOAD_LAYOUT, "");
 
 
         ImageView iv_loading = (ImageView) findViewById(R.id.iv_loading);
@@ -147,7 +146,7 @@ public class ManagerLoveActivity extends AppCompatActivity {
             public void onRefresh() {
                 //刷新数据，下拉刷新
                 //加载最新的数据，并保存到loadList中，没有则为空
-                getMore(DOWN_LOAD,"");
+                getMore(DOWN_LOAD, "");
                 //用于延时
             }
         });
@@ -155,7 +154,7 @@ public class ManagerLoveActivity extends AppCompatActivity {
             @Override
             public void onGetMore() {
                 //获取更多数据，上拉加载
-                getMore(UP_LOAD,list.get(listViewAdapterForLove.getCount() - 1).getCreatedAt() );
+                getMore(UP_LOAD, list.get(listViewAdapterForLove.getCount() - 1).getCreatedAt());
             }
         });
 
@@ -165,6 +164,24 @@ public class ManagerLoveActivity extends AppCompatActivity {
                 listViewLoveWall.smoothScrollToPosition(0);
             }
         });
+
+        setSupportActionBar(mToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle("爱意绵绵");
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:{
+                finish();
+                break;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void delayTime(int timeInMill, final int type) {
@@ -172,11 +189,11 @@ public class ManagerLoveActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while(times > 0){
+                while (times > 0) {
                     try {
-                        times --;
+                        times--;
                         Thread.sleep(100);
-                        if (times == 0){
+                        if (times == 0) {
                             Message message = new Message();
                             message.what = LOAD_OVER;
                             message.arg1 = type;
@@ -195,13 +212,13 @@ public class ManagerLoveActivity extends AppCompatActivity {
         List<BmobQuery<TreeHoleItemForLove>> queries = new ArrayList<>();
 
         SignUserBaseClass user = new SignUserBaseClass();
-        user.setObjectId(getSharedPreferences("LoginState",MODE_PRIVATE).getString("userId",null));
+        user.setObjectId(getSharedPreferences("LoginState", MODE_PRIVATE).getString("userId", null));
         query.addWhereEqualTo("author", new BmobPointer(user));
         queries.add(query);
-        if(type == UP_LOAD){
+        if (type == UP_LOAD) {
             BmobQuery<TreeHoleItemForLove> query1 = new BmobQuery<>();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date date  = null;
+            Date date = null;
             try {
                 date = sdf.parse(start);
             } catch (ParseException e) {
@@ -217,9 +234,9 @@ public class ManagerLoveActivity extends AppCompatActivity {
         mainQuery.findObjects(new FindListener<TreeHoleItemForLove>() {
             @Override
             public void done(List<TreeHoleItemForLove> list0, BmobException e) {
-                if(e == null){
+                if (e == null) {
                     isLoadSuccess = list0.size() == 0 ? false : true;
-                    if(type == DOWN_LOAD){
+                    if (type == DOWN_LOAD) {
                         list.clear();
                     }
                     list.addAll(list0);
@@ -230,39 +247,39 @@ public class ManagerLoveActivity extends AppCompatActivity {
     }
 
 
-    Handler handler = new Handler(){
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case DELETE_ITEM_FOR_LOVE:{
-                    if(msg.arg1 == 1){
+                case DELETE_ITEM_FOR_LOVE: {
+                    if (msg.arg1 == 1) {
                         Toast.makeText(context, "删除成功", Toast.LENGTH_SHORT).show();
                         list.remove(msg.arg2);
                         listViewAdapterForLove.notifyDataSetChanged();
-                    }else{
+                    } else {
                         Toast.makeText(context, "删除失败，数据库错误", Toast.LENGTH_SHORT).show();
                     }
                     break;
                 }
                 case LOAD_OVER: {//刷新完毕
-                    switch(msg.arg1){
-                        case UP_LOAD:{
-                            if(!isLoadSuccess){
-                                Toast.makeText(context , "碰到头了", Toast.LENGTH_SHORT).show();
+                    switch (msg.arg1) {
+                        case UP_LOAD: {
+                            if (!isLoadSuccess) {
+                                Toast.makeText(context, "碰到头了", Toast.LENGTH_SHORT).show();
                             }
                             listViewAdapterForLove.notifyDataSetChanged();
                             listViewLoveWall.refreshComplete();
                             listViewLoveWall.getMoreComplete();
                             break;
                         }
-                        case DOWN_LOAD:{
+                        case DOWN_LOAD: {
                             listViewAdapterForLove.notifyDataSetChanged();
                             listViewLoveWall.refreshComplete();
                             listViewLoveWall.getMoreComplete();
                             break;
                         }
-                        case LOAD_LAYOUT:{
+                        case LOAD_LAYOUT: {
                             loadLayout.setVisibility(View.INVISIBLE);
                             listViewAdapterForLove.notifyDataSetChanged();
                             break;

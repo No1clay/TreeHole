@@ -1,31 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="match_parent">
-
-    <LinearLayout
-        android:layout_alignParentTop="true"
+              android:layout_width="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_height="match_parent">
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/mainBackground">
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-        <ImageView
-            android:id="@+id/return_last_activity_button"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_height="40dp"
-            android:src="@drawable/return_last_activity" />
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
-        <TextView
-            android:id="@+id/speakId"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="吐槽 1456222"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
-    </LinearLayout>
+    </android.support.design.widget.AppBarLayout>
     <include layout="@layout/load_layout_to_use"></include>
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/refresh_layout"

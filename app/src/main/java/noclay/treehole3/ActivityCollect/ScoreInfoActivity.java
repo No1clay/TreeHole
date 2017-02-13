@@ -204,7 +204,6 @@ public class ScoreInfoActivity extends AppCompatActivity implements
                             Toast.makeText(context, "太棒了，都过了哦", Toast.LENGTH_SHORT).show();
                         }else{
                             Toast.makeText(context, "还没有成绩哦", Toast.LENGTH_SHORT).show();
-
                         }
                     } else {
                         mDatas.addAll(temp);

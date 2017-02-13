@@ -12,18 +12,17 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -34,6 +33,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.datatype.BmobPointer;
@@ -52,12 +53,13 @@ import noclay.treehole3.R;
  * Created by 寒 on 2016/7/22.
  */
 public class CommentActivity extends AppCompatActivity {
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
     private ListViewAdapterForSpeakComment listViewAdapterForSpeakComment;
     private ListView listView;
     private ScrollView scrollView;
     private String objectId;
     //内容部分的选项
-    private ImageView returnLastActivity;
     private ImageView userHeadImage;
     private TextView userName;
     private TextView content;
@@ -84,6 +86,7 @@ public class CommentActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_speak_comment);
+        ButterKnife.bind(this);
         initView();
         //获取当前吐槽的对象
         BmobQuery<TreeHoleItemForSpeak> query1 = new BmobQuery<>();
@@ -137,17 +140,10 @@ public class CommentActivity extends AppCompatActivity {
             }
         });
 
-        returnLastActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
     }
 
     private void initView() {
         //控件绑定的地方
-        returnLastActivity = (ImageView) findViewById(R.id.return_last_activity_button);
         userHeadImage = (ImageView) findViewById(R.id.user_head_image);
         userName = (TextView) findViewById(R.id.user_name);
         content = (TextView) findViewById(R.id.user_content);
@@ -172,7 +168,23 @@ public class CommentActivity extends AppCompatActivity {
         ImageView iv_loading = (ImageView) findViewById(R.id.iv_loading);
         loadingDrawable = (AnimationDrawable) iv_loading.getDrawable();
         loadingDrawable.start();
+        setSupportActionBar(mToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle("评论");
+        }
 
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:{
+                finish();
+                break;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     Handler handler = new Handler() {
@@ -226,8 +238,8 @@ public class CommentActivity extends AppCompatActivity {
                     }
                     break;
                 }
-                case LOAD_IMAGE:{
-                    if(msg.arg1 == 1){
+                case LOAD_IMAGE: {
+                    if (msg.arg1 == 1) {
                         setUserImageView((String) msg.obj);
                     }
                 }

@@ -127,7 +127,8 @@ public class SelectScoreActivity extends AppCompatActivity
                 break;
             }
             case 2: {
-
+                Intent intent = new Intent(context, SelectCETActivity.class);
+                startActivity(intent);
                 break;
             }
             case 3: {

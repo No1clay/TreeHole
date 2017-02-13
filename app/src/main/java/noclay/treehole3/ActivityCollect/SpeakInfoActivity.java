@@ -8,16 +8,17 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +26,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.exception.BmobException;
@@ -41,12 +44,13 @@ import noclay.treehole3.R;
  * Created by 82661 on 2016/8/28.
  */
 public class SpeakInfoActivity extends AppCompatActivity {
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
     private ListViewAdapterForSpeakComment listViewAdapterForSpeakComment;
     private ListView listView;
     private ScrollView scrollView;
     private String objectId;
     //内容部分的选项
-    private ImageView returnLastActivity;
     private TextView content;
     private TextView admireShow;//热度展示
     private TextView sharedShow;
@@ -55,7 +59,6 @@ public class SpeakInfoActivity extends AppCompatActivity {
     private SwipeRefreshLayout refreshLayout;
     private LinearLayout loadingLayout;
     private AnimationDrawable loadingDrawable;
-    private TextView speakId;
     private List<TreeHoleItemComment> commentList = new ArrayList<>();
     private static final int LOAD_SPEAK = 0;
     private static final int LOAD_POST = 2;
@@ -70,6 +73,7 @@ public class SpeakInfoActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_speak_info);
+        ButterKnife.bind(this);
         initView();
         //获取当前吐槽的对象
         BmobQuery<TreeHoleItemForSpeak> query1 = new BmobQuery<>();
@@ -122,18 +126,10 @@ public class SpeakInfoActivity extends AppCompatActivity {
             }
         });
 
-        returnLastActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
     }
 
     private void initView() {
         //控件绑定的地方
-        returnLastActivity = (ImageView) findViewById(R.id.return_last_activity_button);
-        speakId = (TextView) findViewById(R.id.speakId);
         content = (TextView) findViewById(R.id.user_content);
         admireShow = (TextView) findViewById(R.id.admire_show);
         sharedShow = (TextView) findViewById(R.id.shared_show);
@@ -147,14 +143,30 @@ public class SpeakInfoActivity extends AppCompatActivity {
         //获取当前吐槽的id
         listView.setAdapter(listViewAdapterForSpeakComment);
         objectId = getIntent().getStringExtra("objectId");
-        speakId.setText("吐槽 " + objectId);
         //工具选项设置消失
         loadingLayout = (LinearLayout) findViewById(R.id.load_layout);
 
         ImageView iv_loading = (ImageView) findViewById(R.id.iv_loading);
         loadingDrawable = (AnimationDrawable) iv_loading.getDrawable();
         loadingDrawable.start();
+        setSupportActionBar(mToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle("评论：" + objectId);
+        }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:{
+                finish();
+                break;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     Handler handler = new Handler() {

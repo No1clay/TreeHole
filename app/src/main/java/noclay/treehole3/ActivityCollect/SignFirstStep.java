@@ -2,27 +2,28 @@ package noclay.treehole3.ActivityCollect;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.method.SingleLineTransformationMethod;
-import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
@@ -31,7 +32,6 @@ import cn.bmob.v3.listener.SaveListener;
 import cn.smssdk.EventHandler;
 import cn.smssdk.OnSendMessageHandler;
 import cn.smssdk.SMSSDK;
-import noclay.treehole3.MainActivity;
 import noclay.treehole3.OtherPackage.SignUserBaseClass;
 import noclay.treehole3.R;
 
@@ -40,7 +40,8 @@ import noclay.treehole3.R;
  */
 public class SignFirstStep extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "SignFirstStep";
-    private ImageView cancelButton;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
     private EditText signUserName;
     private RadioButton manChecked, womanChecked;
     private EditText signUserPassWord, signUserPassWordAgain;
@@ -61,6 +62,7 @@ public class SignFirstStep extends AppCompatActivity implements View.OnClickList
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_activity_layout);
+        ButterKnife.bind(this);
         initView();
         SMSSDK.initSDK(SignFirstStep.this, "1559e5fc73570", "8a88fdb37b3887daa07b4074a1b9b66b");
         EventHandler eh = new EventHandler() {
@@ -109,7 +111,6 @@ public class SignFirstStep extends AppCompatActivity implements View.OnClickList
     }
 
     private void initView() {
-        cancelButton = (ImageView) findViewById(R.id.cancel_button);
         signUserName = (EditText) findViewById(R.id.name);
         manChecked = (RadioButton) findViewById(R.id.man_check);
         womanChecked = (RadioButton) findViewById(R.id.woman_check);
@@ -120,23 +121,35 @@ public class SignFirstStep extends AppCompatActivity implements View.OnClickList
         checkNumberForMessage = (EditText) findViewById(R.id.checkNumber);
         accessText = (TextView) findViewById(R.id.accessText);
         completeSignButton = (Button) findViewById(R.id.completeSign);
-        cancelButton.setOnClickListener(this);
         manChecked.setOnClickListener(this);
         womanChecked.setOnClickListener(this);
         sendMessage.setOnClickListener(this);
         accessText.setOnClickListener(this);
         completeSignButton.setOnClickListener(this);
         signUserName.requestFocus();
-    }
+        setSupportActionBar(mToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle("注册树洞说");
+        }
 
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:{
+                setResultBack(false);
+                break;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.cancel_button: {
-                setResultBack(false);
-                break;
-            }
+
             case R.id.man_check: {
                 cur = 1;
                 break;//是男的则为1
@@ -154,7 +167,7 @@ public class SignFirstStep extends AppCompatActivity implements View.OnClickList
                     public void done(List<SignUserBaseClass> list, BmobException e) {
                         if (!list.isEmpty()) {
                             Toast.makeText(SignFirstStep.this, "该手机已注册", Toast.LENGTH_SHORT).show();
-                        } else{//未查询到用户
+                        } else {//未查询到用户
                             SMSSDK.getVerificationCode("86", signUserPhoneNumber.getText().
                                     toString(), new OnSendMessageHandler() {
                                 @Override

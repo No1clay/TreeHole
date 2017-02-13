@@ -107,6 +107,7 @@ public class OkHttpSet {
      * 用户名不能为空！！
      * 密码不能为空！！
      * 验证码不能为空，如看不清请刷新！！
+     *
      * @param number
      * @param password
      * @param verifyCode
@@ -189,6 +190,7 @@ public class OkHttpSet {
 
     /**
      * 获取个人头像：找到url
+     *
      * @param mRequestUrl
      * @param sessionId
      * @param handler
@@ -228,6 +230,7 @@ public class OkHttpSet {
 
     /**
      * 获取头像：下载
+     *
      * @param mRequestUrl
      * @param name
      * @param number
@@ -236,11 +239,11 @@ public class OkHttpSet {
      * @param handler
      */
     public static void getImage(RequestUrl mRequestUrl,
-                          String name,
-                          String number,
-                          String url,
-                          String sessionId,
-                          Handler handler) {
+                                String name,
+                                String number,
+                                String url,
+                                String sessionId,
+                                Handler handler) {
         if (mRequestUrl == null) {
             return;
         }
@@ -290,11 +293,12 @@ public class OkHttpSet {
 
     /**
      * 获取ViewState
+     *
      * @param requestUrl
      * @param sessionId
      * @return
      */
-    public static String[] getSchoolYearCount(RequestUrl requestUrl, String sessionId){
+    public static String[] getSchoolYearCount(RequestUrl requestUrl, String sessionId) {
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
                 .followRedirects(false)
                 .followSslRedirects(false)
@@ -307,10 +311,10 @@ public class OkHttpSet {
                 .build();
         try {
             Response response = okHttpClient.newCall(request).execute();
-            if (response.code() == 200){
+            if (response.code() == 200) {
                 Document document = Jsoup.parse(response.body().string());
                 Elements ele = document.select("#ddlXN > option");
-                if (ele.size() != 1){
+                if (ele.size() != 1) {
                     String[] result = new String[ele.size()];
                     for (int i = 1; i < ele.size(); i++) {
                         result[i - 1] = ele.get(i).text();
@@ -328,6 +332,7 @@ public class OkHttpSet {
 
     /**
      * 获取历年成绩
+     *
      * @param requestUrl
      * @param schoolYear
      * @param term
@@ -339,7 +344,7 @@ public class OkHttpSet {
                                            String schoolYear,
                                            int term,
                                            String sessionId,
-                                           String scoreViewState){
+                                           String scoreViewState) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .followRedirects(false)
                 .followSslRedirects(false)
@@ -364,7 +369,7 @@ public class OkHttpSet {
         try {
             Response response = client.newCall(request).execute();
             Log.d("score", "getScore: code = " + response.code());
-            if (response.code() == 200){
+            if (response.code() == 200) {
                 Document document = Jsoup.parse(response.body().string());
                 Elements ele = document.select("#Datagrid1 > tbody > tr");
                 List<ScoreData> result = new ArrayList<>();
@@ -374,9 +379,9 @@ public class OkHttpSet {
                     score.setDate(scoreItem.get(0).text() + "-" + scoreItem.get(1).text());
                     score.setCode(scoreItem.get(2).text());
                     score.setName(scoreItem.get(3).text());
-                    if ("必修课".equals(scoreItem.get(4).text())){
+                    if ("必修课".equals(scoreItem.get(4).text())) {
                         score.setSelect(false);
-                    }else{
+                    } else {
                         score.setSelect(true);
                     }
                     score.setCredit(scoreItem.get(6).text());
@@ -398,14 +403,15 @@ public class OkHttpSet {
 
     /**
      * 获取挂科
+     *
      * @param requestUrl
      * @param sessionId
      * @param scoreViewState
      * @return
      */
     public static List<ScoreData> getNotPassScore(RequestUrl requestUrl,
-                                           String sessionId,
-                                           String scoreViewState){
+                                                  String sessionId,
+                                                  String scoreViewState) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .followRedirects(false)
                 .followSslRedirects(false)
@@ -430,7 +436,7 @@ public class OkHttpSet {
         try {
             Response response = client.newCall(request).execute();
             Log.d("score", "getScore: code = " + response.code());
-            if (response.code() == 200){
+            if (response.code() == 200) {
                 Document document = Jsoup.parse(response.body().string());
                 Elements ele = document.select("#Datagrid3 > tbody > tr");
                 List<ScoreData> result = new ArrayList<>();
@@ -440,9 +446,9 @@ public class OkHttpSet {
                     score.setDate("");
                     score.setCode(scoreItem.get(0).text());
                     score.setName(scoreItem.get(1).text());
-                    if ("必修课".equals(scoreItem.get(2).text())){
+                    if ("必修课".equals(scoreItem.get(2).text())) {
                         score.setSelect(false);
-                    }else{
+                    } else {
                         score.setSelect(true);
                     }
                     score.setCredit(scoreItem.get(3).text());
@@ -461,4 +467,122 @@ public class OkHttpSet {
         }
         return null;
     }
+
+    public static String getTitleOfCET() {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .followSslRedirects(false)
+                .followRedirects(false)
+                .build();
+        String url = "http://cet.99sushe.com/";
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Host", "cet.99sushe.com")
+                .addHeader("Referer", url)
+                .get()
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.code() == 200) {
+                Document document = Jsoup.parse(response.body().string());
+                Elements ele = document.select("#content > div > p");
+                StringBuilder stringBuilder = new StringBuilder();
+                for (int i = 0; i < 2 && i < ele.size(); i++) {
+                    stringBuilder.append(ele.get(i).toString());
+                }
+                return stringBuilder.toString();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return null;
+    }
+
+
+//    public static String[] getCET(Context context, String name, String number) {
+//        String url = "http://www.chsi.com.cn/cet/query?zkzh="
+//                + number + "&xm=" + name;
+//        Log.d("cet", "getCET: url" + url);
+//        RequestQueue mQueue = Volley.newRequestQueue(context);
+//        StringRequest stringRequest = new StringRequest(
+//                com.android.volley.Request.Method.GET,
+//                url,
+//                new com.android.volley.Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        Log.d("cet", "onResponse: " + response);
+//                        Document document = Jsoup.parse(response);
+//                        Elements ele = document.select("#leftH");
+//                        Log.d("cet", "onResponse: ele = " + ele.toString());
+//                    }
+//                },
+//                new com.android.volley.Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Log.e("cet", "onErrorResponse: ", error);
+//                    }
+//                }) {
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> header = new HashMap<>();
+//                header.put("Accept:", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+//                header.put("Accept-Encoding:", "gzip, deflate, sdch");
+//                header.put("Connection:", "keep-alive");
+//                header.put("Cache-Control", "max-age=0");
+//                header.put("Host", "www.chsi.com.cn");
+//                header.put("Referer", "http://www.chsi.com.cn/cet/");
+//                return header;
+//            }
+//        };
+//        mQueue.add(stringRequest);
+//        return null;
+//    }
+    public static String getCET(String name, String number) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .followSslRedirects(false)
+                .followRedirects(false)
+                .build();
+        String url = "http://www.chsi.com.cn/cet/query?zkzh="
+                + number + "&xm=" + name;
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Host", "www.chsi.com.cn")
+                .addHeader("Referer", "http://www.chsi.com.cn/cet/")
+                .get()
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.code() == 200) {
+                Document document = Jsoup.parse(response.body().string());
+                Elements ele = document.select("table.cetTable");
+                StringBuilder builder = new StringBuilder();
+                builder.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n" +
+                        "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n" +
+                        "<head>\n" +
+                        "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n" +
+                        "<style type=\"text/css\">\n" +
+                        ".cetTable{ margin:0 auto;}\n" +
+                        ".cetTable th{ font-weight:bold; text-align:right;}\n" +
+                        ".cetTable td{text-align:left;}\n" +
+                        ".color333, a.color333{color:#333333;}\n" +
+                        ".color666, a.color666{color:#666666;}\n" +
+                        ".color999, a.color999{color:#999999;}\n" +
+                        ".colorRed, a.colorRed,a.colorRed:link,a.colorRed:visited{ color:#D94840;}\n" +
+                        "</style>\n" +
+                        "\n" +
+                        "</head>\n" +
+                        "<body>");
+                builder.append(ele.toString());
+                builder.append("\n" +
+                        "</body>\n" +
+                        "</html>");
+                return builder.toString();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return null;
+    }
+
 }

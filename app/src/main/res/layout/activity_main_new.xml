@@ -20,6 +20,7 @@
 
         </android.support.v7.widget.Toolbar>
         <LinearLayout
+            android:id="@+id/mainLayout"
             android:layout_marginTop="?attr/actionBarSize"
             android:orientation="vertical"
             android:layout_width="match_parent"
