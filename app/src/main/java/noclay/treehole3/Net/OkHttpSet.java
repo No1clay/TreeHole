@@ -41,11 +41,11 @@ public class OkHttpSet {
     /**
      * Host
      */
-    public static final String HOST = "222.24.19.201";
+    public static final String HOST = "222.24.62.120";
     /**
      * Referer
      */
-    public static final String REFERER = "http://222.24.19.201/";
+    public static final String REFERER = "http://222.24.62.120/";
     /**
      * 验证码请求地址
      */
@@ -123,8 +123,7 @@ public class OkHttpSet {
                 .newBuilder()
                 .build();
         RequestBody builder = new FormBody.Builder()
-                .add("__VIEWSTATE", "dDwtNTE2MjI4MTQ7Oz61IGQDPAm6cyppI+uTzQcI8sEH6Q==")
-                .add("__VIEWSTATEGENERATOR", "92719903")
+                .add("__VIEWSTATE", "dDwtNTE2MjI4MTQ7Oz5O9kSeYykjfN0r53Yqhqckbvd83A==")
                 .add("txtUserName", number)
                 .add("TextBox2", password)
                 .add("txtSecretCode", verifyCode)

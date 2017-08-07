@@ -19,7 +19,7 @@ public class RequestUrl {
         this.number = number;
     }
 
-    public static final String IP = "http://222.24.19.201/";
+    public static final String IP = "http://222.24.62.120/";
 
     /**
      * 获取验证码

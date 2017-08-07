@@ -22,11 +22,11 @@ public class OkHttpUtil {
     /**
      * Host
      */
-    public static final String HOST = "222.24.19.201";
+    public static final String HOST = "222.24.62.120";
     /**
      * Referer
      */
-    public static final String REFERER = "http://222.24.19.201/";
+    public static final String REFERER = "http://222.24.62.120/";
     /**
      * 验证码请求地址
      */
