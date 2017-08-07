@@ -419,7 +419,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.menu_white_48);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_36dp);
         }
         mNavView.setCheckedItem(R.id.my_tree_hole);
         mNavView.setNavigationItemSelectedListener(
